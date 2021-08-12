@@ -69,7 +69,7 @@ class PersonService:
 
 def setup_grpc_server(server_port):
     server = grpc.server(ThreadPoolExecutor(max_workers=5))
-    loc_pb2_grpc.add_PersonServiceServicer_to_server(PersonService(), server)
+    per_pb2_grpc.add_PersonServiceServicer_to_server(PersonService(), server)
     server.add_insecure_port(server_port)
 
     def serve(server):
