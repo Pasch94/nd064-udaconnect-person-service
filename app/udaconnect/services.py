@@ -30,6 +30,7 @@ class PersonService:
             raise Exception(f"Invalid payload: {validation_results}")
 
         new_person = Person()
+        new_person.id = person["id"]
         new_person.first_name = person["first_name"]
         new_person.last_name = person["last_name"]
         new_person.company_name = person["company_name"]
@@ -46,18 +47,25 @@ class PersonService:
         with app.app_context():
             person = db.session.query(Person).get(person_id)
         return per_pb2.Person(
-                id=person["id"],
-                first_name=person["first_name"],
-                last_name=person["last_name"],
-                company_name=person["company_name"]
+                id=person.id,
+                first_name=person.first_name,
+                last_name=person.last_name,
+                company_name=person.company_name
                 )
 
     @staticmethod
     def retrieve_all() -> List[Person]:
         with app.app_context():
             persons = db.session.query(Person).all()
+        ret_persons = []
+        for person in persons:
+            ret_persons.append(per_pb2.Person(
+                id = person.id,
+                first_name=person.first_name,
+                last_name=person.last_name,
+                company_name=person.company_name))
         return per_pb2.PersonList(
-                persons=persons
+                persons=ret_persons
                 )
 
     # gRPC functions
